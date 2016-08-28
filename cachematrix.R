@@ -1,15 +1,60 @@
-## Put comments here that give an overall description of what your
-## functions do
+## makeCacheMatrix.R
+## functions to cache the results of an inverse matrix calculation leveraging lexical scoping to preserve state inside of an R object.
+## the makeCacheMatrix function creates a special "matrix" ,which is really a list containing a function to
+## a.set the value of the matrix
+## b.get the value of the matrix
+## c.set the value of the inverse of the matrix
+## d.get the value of the inverse of the matrix
+## introduce:
+## invoke by calling an object to makeCacheMatrix
+## 	objectName<-makeCacheMatrix()
+##  Populate the Matrices values with (where matrix represents your matrix);
+##    objectName$set(matrix)
+##  View Matrix Values in objectName;
+##    objectName$get()
 
-## Write a short comment describing this function
+
 
 makeCacheMatrix <- function(x = matrix()) {
+	i<-NULL
+	set <- function(y){
+		x<<-y
+		i<<NULL
+	}
+	get<-function()x
+	setinverse<-function(inverse)i<<-inverse
+	getinverse<-function()i
+	list(	set=set,
+		get=get,
+		setinverse=setinverse,
+		getinverse=getinverse)
 
 }
 
 
-## Write a short comment describing this function
+
+## The cacheSolve function calculates the inverse of the special "matrix",which created with the makeCacheMatrix function.
+## However, it first checks to see if the inverse has already been calculated.
+## If so, it gets the inverse from the cache and skips the computation.
+## Otherwise, it calculates the inverse of the matrix and sets the value of the inverse in the cache via the setinverse function.
+## introduce:
+##  Solve and Inverse Matrix and Cache Results;
+##    cacheSolve(objectName)
+##  View Inverse Matrix Cache in objectName;
+##    objectName$getinverse()
 
 cacheSolve <- function(x, ...) {
         ## Return a matrix that is the inverse of 'x'
+	i<-x$getinverse()
+	if(!is.null(i){
+		message("getting cached data")
+		return(i)
+	}
+	data<-x$get()
+	i<-solve(data,...)
+	x$setinverse(i)
+	i
 }
+
+
+
